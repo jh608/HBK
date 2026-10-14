@@ -1,0 +1,16 @@
+function p2s_new_model(mdl, paramScript, stopTime, maxStep)
+%P2S_NEW_MODEL  Create an empty model MDL whose InitFcn runs PARAMSCRIPT (looked up next to
+%   the saved model file first), with a stiff variable-step solver suited to ideal-switch
+%   power stages (switch instants are located by zero-crossing detection).
+if bdIsLoaded(mdl)
+    close_system(mdl, 0);
+end
+new_system(mdl);
+initFcn = sprintf(['p2s_dir = fileparts(get_param(bdroot, ''FileName''));\n' ...
+    'if ~isempty(p2s_dir), addpath(p2s_dir); end\nclear p2s_dir\n%s;\n'], paramScript);
+set_param(mdl, 'InitFcn', initFcn, ...
+    'StopTime', stopTime, 'SolverType', 'Variable-step', 'Solver', 'ode23tb', ...
+    'MaxStep', maxStep, 'RelTol', '1e-4', 'AbsTol', 'auto', ...
+    'ZeroCrossAlgorithm', 'Adaptive', 'MaxConsecutiveZCsMsg', 'none', ...
+    'SaveOutput', 'on', 'SaveFormat', 'Dataset');
+end

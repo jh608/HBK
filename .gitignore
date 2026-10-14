@@ -1,0 +1,11 @@
+# Simulink / MATLAB build products
+slprj/
+*.slxc
+*.mexa64
+*.mexw64
+*.mexmaci64
+*.asv
+*.autosave
+*.slx.r20*
+*_ert_rtw/
+*_grt_rtw/
