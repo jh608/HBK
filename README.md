@@ -132,12 +132,15 @@ which are frequency-response setups rather than converter models.
   * modulation: SVPWM (min/max injection), single update at the carrier minimum, 100 kHz.
 * **Worth knowing:** in the saved PLECS model the q-axis "Manual Switch" selects the
   constant −1.85 V instead of the q-axis PI output, so iq is not closed-loop controlled
-  (`sel_q = 2` connects the PI). This is reproduced as saved.
+  (`sel_q = 2` connects the PI). This is reproduced as saved. In the check run it lets iq
+  drift to about −60 A within 25 ms, while Vdc still settles at 700 V. With `sel_q = 2`
+  the model holds Vdc at 700 ± 1.5 V and iq ≈ 0 from the start.
 * The PLECS "Three-Phase PLL" library block is replaced by an SRF-PLL. It drives the
   q-axis voltage of the same abc>dq transform to zero, with a PI at ωn = 2π·25 rad/s,
   ζ = 0.707 (`pll.*`). θ starts at 0 like the PLECS block, which means it starts ≈ π/2
   away from the grid angle. The model therefore shows a start-up transient until the PLL
-  locks (Vdc swings up to ≈ 965 V in the first ms).
+  locks. As saved (q-axis open loop), Vdc swings to ≈ 965 V in the first 4 ms and settles
+  at ≈ 700 V by 17 ms.
 
 ## Assumptions made where the PLECS file does not say
 
@@ -173,6 +176,15 @@ octave-cli --eval "selftest"                      # the mock rejects bad models
 octave-cli --eval "run_build_check('dab')"        # also 'classd', 'sixswitch'
 octave-cli --eval "L = sim_check_dab(300e-6, 4e-9);"
 ```
+
+Results of the check runs in the mock (fixed step 4–100 ns):
+
+* **DAB, 4 ms:** ±700 V / ±250 V bridge voltages and the 5 % secondary zero state (αS = 0.025).
+  The PI saturates at φ = 0.245 and delivers ≈ 2.5–3 kW, so Vo sags from 250 V to 238 V
+  (see the leakage note above).
+* **Class D, 567 Hz / 10 A demand:** the load current follows at ≈ 85 % amplitude. The
+  bus settles at 401 V (zener plus 10 mΩ).
+* **SixSwitch:** see the numbers above, for the saved selection and for `sel_q = 2`.
 
 This is a strong check of the wiring and the arithmetic, but it is not MATLAB. A first
 `build_all` in MATLAB is still the real test of the API calls and data types.
