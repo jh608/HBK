@@ -1,4 +1,5 @@
 function h = add_block(src, dst, varargin)
+if ~exist('OCTAVE_VERSION', 'builtin'), error('mock:matlab', 'tools/mock_simulink is an Octave stand-in for Simulink: remove it from the MATLAB path'); end
 global MOCK
 T = mock_libtable();
 if ~isKey(T, src), error('mock:add_block', 'Unknown library block "%s"', src); end

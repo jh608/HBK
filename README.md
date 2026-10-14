@@ -157,7 +157,7 @@ which are frequency-response setups rather than converter models.
 
 ## Checking the translation
 
-`tools/mock_simulink/` is a stand-in for the Simulink API (`add_block`, `add_line`,
+`tools/mock_simulink/` (Octave only — never put it on a MATLAB path, it shadows Simulink functions) is a stand-in for the Simulink API (`add_block`, `add_line`,
 `set_param`, …) written in Octave. It:
 
 * runs the build scripts unchanged;
