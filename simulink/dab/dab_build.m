@@ -19,8 +19,8 @@ ps = p2s_subsys(mdl, 'Power stage (ideal switches)', {'gates_pri', 'gates_sec', 
 p2s_mfun(ps, 'dab_plant', fileread(fullfile(here, 'dab_plant.m')), {'Pdab'});
 p2s_add(ps, 'simulink/Continuous/Integrator', 'x', 'InitialCondition', 'Pdab.x0');
 p2s_add(ps, 'simulink/Signal Routing/Selector', 'i1 is', 'NumberOfDimensions', '1', ...
-    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '[1 3]', ...
-    'InputPortWidth', '8');
+    'InputPortWidth', '8', ...   % before Indices: Simulink checks Indices against the width
+    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '[1 3]');
 p2s_add(ps, 'simulink/Sources/Constant', 'zero', 'Value', '0');
 p2s_add(ps, 'simulink/Logic and Bit Operations/Relational Operator', 'i > 0', 'Operator', '>');
 p2s_line(ps, 'x/1', 'dab_plant/1', 'i1 is/1');

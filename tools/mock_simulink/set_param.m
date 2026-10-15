@@ -39,6 +39,14 @@ for k = 1:2:numel(varargin)
         end
     end
     b.params.(n) = v;
+    % Simulink validates Selector indices against the current input width at set time
+    if strcmp(b.type, 'Selector') && any(strcmp(n, {'Indices', 'InputPortWidth'}))
+        w = str2double(b.params.InputPortWidth);
+        try, ix = evalin('base', b.params.Indices); catch, ix = []; end
+        if w > 0 && ~isempty(ix) && (any(ix < 1) || any(ix > w))
+            error('mock:set_param', 'Invalid parameter ''Indices'' in %s: must be in 1..%d', obj, w);
+        end
+    end
 end
 MOCK.blocks(obj) = b;
 end

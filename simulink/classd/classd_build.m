@@ -19,8 +19,8 @@ ps = p2s_subsys(mdl, 'Power stage (ideal switches)', {'gates', 'e_load'}, {'meas
 p2s_mfun(ps, 'classd_plant', fileread(fullfile(here, 'classd_plant.m')), {'Pcd'});
 p2s_add(ps, 'simulink/Continuous/Integrator', 'x', 'InitialCondition', 'Pcd.x0');
 p2s_add(ps, 'simulink/Signal Routing/Selector', 'leg currents', 'NumberOfDimensions', '1', ...
-    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '1:6', ...
-    'InputPortWidth', '8');
+    'InputPortWidth', '8', ...   % before Indices: Simulink checks Indices against the width
+    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '1:6');
 p2s_add(ps, 'simulink/Sources/Constant', 'zero', 'Value', '0');
 p2s_add(ps, 'simulink/Logic and Bit Operations/Relational Operator', 'i > 0', 'Operator', '>');
 p2s_add(ps, 'simulink/Discrete/Memory', 'Memory (loop breaker)', 'InitialCondition', 'classd_y0');
