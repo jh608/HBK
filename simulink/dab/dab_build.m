@@ -18,9 +18,9 @@ set_param(mdl, 'Description', 'Ideal-switch translation of DAB FPGA.plecs (see R
 ps = p2s_subsys(mdl, 'Power stage (ideal switches)', {'gates_pri', 'gates_sec', 'i_load'}, {'meas'});
 p2s_mfun(ps, 'dab_plant', fileread(fullfile(here, 'dab_plant.m')), {'Pdab'});
 p2s_add(ps, 'simulink/Continuous/Integrator', 'x', 'InitialCondition', 'Pdab.x0');
-p2s_add(ps, 'simulink/Signal Routing/Selector', 'i1 is', 'NumberOfDimensions', '1', ...
-    'InputPortWidth', '8', ...   % before Indices: Simulink checks Indices against the width
-    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '[1 3]');
+% pick i1 = x(1) and is = x(3) out of the state vector
+p2s_add(ps, 'simulink/Math Operations/Gain', 'i1 is', 'Gain', '[1 0 0 0 0 0 0 0; 0 0 1 0 0 0 0 0]', ...
+    'Multiplication', 'Matrix(K*u)');
 p2s_add(ps, 'simulink/Sources/Constant', 'zero', 'Value', '0');
 p2s_add(ps, 'simulink/Logic and Bit Operations/Relational Operator', 'i > 0', 'Operator', '>');
 p2s_line(ps, 'x/1', 'dab_plant/1', 'i1 is/1');

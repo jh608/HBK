@@ -18,9 +18,9 @@ set_param(mdl, 'Description', 'Ideal-switch translation of Class D Rev B.plecs (
 ps = p2s_subsys(mdl, 'Power stage (ideal switches)', {'gates', 'e_load'}, {'meas'});
 p2s_mfun(ps, 'classd_plant', fileread(fullfile(here, 'classd_plant.m')), {'Pcd'});
 p2s_add(ps, 'simulink/Continuous/Integrator', 'x', 'InitialCondition', 'Pcd.x0');
-p2s_add(ps, 'simulink/Signal Routing/Selector', 'leg currents', 'NumberOfDimensions', '1', ...
-    'InputPortWidth', '8', ...   % before Indices: Simulink checks Indices against the width
-    'IndexMode', 'One-based', 'IndexOptions', 'Index vector (dialog)', 'Indices', '1:6');
+% pick the six leg currents x(1:6) out of the state vector
+p2s_add(ps, 'simulink/Math Operations/Gain', 'leg currents', 'Gain', '[eye(6) zeros(6,2)]', ...
+    'Multiplication', 'Matrix(K*u)');
 p2s_add(ps, 'simulink/Sources/Constant', 'zero', 'Value', '0');
 p2s_add(ps, 'simulink/Logic and Bit Operations/Relational Operator', 'i > 0', 'Operator', '>');
 p2s_add(ps, 'simulink/Discrete/Memory', 'Memory (loop breaker)', 'InitialCondition', 'classd_y0');
