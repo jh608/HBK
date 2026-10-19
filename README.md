@@ -21,6 +21,10 @@ cd simulink
 build_all          % writes dab/dab_fpga.slx, classd/classd_revb.slx, sixswitch/sixswitch.slx
 ```
 
+`smoke_test` (same folder) builds each model, compiles it and runs a short simulation, and
+prints the first error if any — the quickest check of a fresh MATLAB install. Notes for
+picking the work up in another Claude Code session are in `CLAUDE.md`.
+
 Each model's `InitFcn` runs its parameter script (`dab_params.m`, `classd_params.m`,
 `sixswitch_params.m`), which holds the PLECS initialisation commands plus the translation
 settings. Change parameters there, not in the blocks. The positions of the PLECS manual
