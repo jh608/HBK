@@ -21,14 +21,15 @@ with ideal switches, so the owner can evaluate the control strategies faster tha
   against `tools/mock_simulink/`, an Octave stand-in for the Simulink API. It checks block
   paths, parameter names, enum values and wiring, and simulates the block graph with a fixed
   step. The plant `.m` files run unchanged in Octave.
-* **The models have never been built in real MATLAB without an error.** The owner's first
-  `build_all` failed in `classd_build` on a Selector block ("Indices … must be in the range
-  1 through 3"). Reordering the Selector parameters did not fix it, so commit `26d8ad5`
-  replaced both Selector blocks (DAB and Class D) with constant Gain matrices
-  (`Matrix(K*u)`). The owner has not reported a run since that change.
-* So job one is: **get `build_all` and a short simulation working in MATLAB** (see below).
-  Expect more errors of the same kind. The Octave mock cannot catch MATLAB-only checks, data
-  types or version differences.
+* **Steps 1 and 2 are done (2026-10-19, local session, MATLAB R2024b).** All three models
+  build, compile and simulate, and the results match the reference numbers below. The
+  figures and wall-clock times are in the README ("Runs in MATLAB R2024b"). Two MATLAB-only
+  fixes were needed:
+  * the Selector blocks were replaced with Gain matrices (`26d8ad5`);
+  * the DAB plant's input sizes are declared (`p2s_mfun`'s `sizes` argument), because the
+    gate loop defeats dimension propagation.
+* What remains is step 3: the PLECS comparison and the owner's decisions. PLECS is not
+  installed on the owner's machine; the installers are in `D:\Downloads`.
 
 ## Step 1: build and smoke-test in MATLAB
 
