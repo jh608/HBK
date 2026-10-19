@@ -21,6 +21,11 @@ cd simulink
 build_all          % writes dab/dab_fpga.slx, classd/classd_revb.slx, sixswitch/sixswitch.slx
 ```
 
+`release/` holds ready-to-run copies of the three models for reviewers (model, params
+script and plant file per folder, plus a reviewer README), so the folder can be zipped and
+sent. Regenerate it with `make_release` (same folder as `build_all`) after any change. Use
+`make_release('R2022b')` to export the models for an older release.
+
 `smoke_test` (same folder) builds each model, compiles it and runs a short simulation, and
 prints the first error if any — the quickest check of a fresh MATLAB install. Notes for
 picking the work up in another Claude Code session are in `CLAUDE.md`.
