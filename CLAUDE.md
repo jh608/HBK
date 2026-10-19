@@ -29,7 +29,8 @@ with ideal switches, so the owner can evaluate the control strategies faster tha
   * the DAB plant's input sizes are declared (`p2s_mfun`'s `sizes` argument), because the
     gate loop defeats dimension propagation.
 * What remains is step 3: the PLECS comparison and the owner's decisions. PLECS is not
-  installed on the owner's machine; the installers are in `D:\Downloads`.
+  installed on the owner's development machine. The comparison is planned in
+  `PLECS_TEST_PLAN.md`, for a session on a machine that has PLECS.
 
 ## Step 1: build and smoke-test in MATLAB
 
