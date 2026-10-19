@@ -16,7 +16,10 @@ set_param(mdl, 'Description', 'Ideal-switch translation of DAB FPGA.plecs (see R
 % Power stage
 % ======================================================================================
 ps = p2s_subsys(mdl, 'Power stage (ideal switches)', {'gates_pri', 'gates_sec', 'i_load'}, {'meas'});
-p2s_mfun(ps, 'dab_plant', fileread(fullfile(here, 'dab_plant.m')), {'Pdab'});
+% Input sizes are declared: the gates reach the plant through a loop (plant -> Memory ->
+% C-Script -> PWM -> plant) that Simulink's size propagation cannot resolve on its own.
+p2s_mfun(ps, 'dab_plant', fileread(fullfile(here, 'dab_plant.m')), {'Pdab'}, ...
+    struct('x', '[8 1]', 'gp', '[4 1]', 'gs', '[4 1]', 'ipos', '[2 1]', 'iload', '1'));
 p2s_add(ps, 'simulink/Continuous/Integrator', 'x', 'InitialCondition', 'Pdab.x0');
 % pick i1 = x(1) and is = x(3) out of the state vector
 p2s_add(ps, 'simulink/Math Operations/Gain', 'i1 is', 'Gain', '[1 0 0 0 0 0 0 0; 0 0 1 0 0 0 0 0]', ...

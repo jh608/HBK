@@ -7,7 +7,7 @@ function smoke_test(which)
 here = fileparts(mfilename('fullpath'));
 addpath(fullfile(here, 'common'));
 cfg = struct( ...
-    'dab',       struct('mdl', 'dab_fpga',    'stop', '300e-6', 'outs', {{'sVout', 'sIout', 'sPout', 'phi'}}), ...
+    'dab',       struct('mdl', 'dab_fpga',    'stop', '300e-6', 'outs', {{'sVout', 'sIout', 'sPout', 'sIprirms'}}), ...
     'classd',    struct('mdl', 'classd_revb', 'stop', '5e-3',   'outs', {{'Vout', 'Iout', 'Vbus', 'Idemand'}}), ...
     'sixswitch', struct('mdl', 'sixswitch',   'stop', '20e-3',  'outs', {{'Vdc', 'Idc', 'Vgrid', 'Igrid'}}));
 names = fieldnames(cfg);
@@ -34,11 +34,22 @@ for k = 1:numel(names)
         fprintf('sim to %s s: OK in %.1f s wall clock\n', c.stop, toc);
         for q = 1:numel(c.outs)
             v = out.yout{q}.Values;
-            fprintf('  %-8s final = %s\n', c.outs{q}, mat2str(double(v.Data(end, :)), 5));
+            fprintf('  %-8s final = %s\n', c.outs{q}, mat2str(last_sample(v), 5));
         end
     catch err
         report('sim', err);
     end
+end
+end
+
+function d = last_sample(v)
+% Time runs along the first dimension for vector signals, along the third for signals
+% logged as matrices (e.g. 1x1xN).
+d = double(v.Data);
+if ndims(d) == 3
+    d = reshape(d(:, :, end), 1, []);
+else
+    d = d(end, :);
 end
 end
 
